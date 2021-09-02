@@ -7,25 +7,21 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\LoginRequest;
 
 
 class LoginController extends Controller
 {
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
         $user = User::where('email', $request->email)->first();
-
-
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
 
-		    return response()->json(['error'=>'email or password is incorrect'], 200); 
+		    return response()->json([
+                'status' => false,
+                'errors' => ['Email or Passwor is incorrect']
+                ],422); 
 
         }
 
