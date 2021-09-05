@@ -5,6 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ResetPasswordController;
+
+
+
+
 
 
 Route::post('login', [LoginController::class,'login']);
@@ -17,4 +22,6 @@ Route::post('role/permissions',[RoleController::class,'permissions']);
 
 Route::resource('user',UserController::class);
 
-
+Route::post('reset_password', [ResetPasswordController::class,'reset_password']);
+Route::get('reset_password_link/{token}', [ResetPasswordController::class,'reset_password_link']);
+Route::post('reset_password_update', [ResetPasswordController::class,'reset_password_update']);
