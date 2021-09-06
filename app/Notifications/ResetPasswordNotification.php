@@ -56,7 +56,7 @@ class ResetPasswordNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            // code
         ];
     }
 }
