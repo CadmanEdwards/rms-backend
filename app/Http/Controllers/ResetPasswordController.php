@@ -64,7 +64,7 @@ class ResetPasswordController extends Controller
 
         $count = ResetPassword::where('email',$request->email)->count();
 
-        $count = 10;
+        $count = 1;
 
         if($count >= 5){
             return response()->json([
