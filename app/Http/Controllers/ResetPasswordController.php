@@ -64,6 +64,8 @@ class ResetPasswordController extends Controller
 
         $count = ResetPassword::where('email',$request->email)->count();
 
+        $count = 10;
+
         if($count >= 5){
             return response()->json([
                 'status' => false,
@@ -73,7 +75,7 @@ class ResetPasswordController extends Controller
 
         $token = Str::random(60);
 
-        $link = 'http://localhost:3000/resetPassword/'. $token;
+        $link = 'http://45.76.217.11:82/resetPassword/'. $token;
         
         $arr = [
             'email' => $request->email,
@@ -89,8 +91,11 @@ class ResetPasswordController extends Controller
 
         if($response){
 
+            $response = [ 'link' => 'http://45.76.217.11:82/' ];
+            Mail::to('francisgill1000@gmail.com')->send(new PasswordReset($response));
+
         // code here for mail
-              Mail::to($request->email)->send(new PasswordReset(['link' => $link]));
+            //   Mail::to($request->email)->send(new PasswordReset(['link' => $link]));
 
         }
 
@@ -102,7 +107,7 @@ class ResetPasswordController extends Controller
                 ]
         ]);
        } catch (\Throwable $th) {
-        //    throw $th;
+           throw $th;   
        }
         
     }
