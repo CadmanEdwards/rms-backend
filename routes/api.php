@@ -22,6 +22,7 @@ Route::post('role/permissions',[RoleController::class,'permissions']);
 
 Route::resource('user',UserController::class);
 
+Route::get('reset_password', [ResetPasswordController::class,'index']);
 Route::post('reset_password', [ResetPasswordController::class,'reset_password']);
 Route::get('reset_password_link/{token}', [ResetPasswordController::class,'reset_password_link']);
 Route::post('reset_password_update', [ResetPasswordController::class,'reset_password_update']);

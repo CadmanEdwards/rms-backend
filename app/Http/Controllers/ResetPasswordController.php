@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ResetPassword;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Mail\PasswordReset;
+use Illuminate\Support\Facades\Mail;
+
+
 use Hash;
 
 use App\Http\Requests\PasswordUpdate;
@@ -14,6 +18,15 @@ use Str;
 
 class ResetPasswordController extends Controller
 {
+
+    public function index()
+    {
+        $response = [ 'link' => 'http://localhost:3000/' ];
+        // Mail::to('francisgill1000@gmail.com')->send(new PasswordReset($response));
+
+        return new PasswordReset($response);
+
+    }
     public function reset_password_link($token)
     {
         
@@ -72,10 +85,14 @@ class ResetPasswordController extends Controller
       
        try {
 
+        $response = ResetPassword::create($arr);
 
+        if($response){
 
+        // code here for mail
+              Mail::to($request->email)->send(new PasswordReset(['link' => $link]));
 
-        ResetPassword::create($arr);
+        }
 
         return response()->json([
             'status' => true,
