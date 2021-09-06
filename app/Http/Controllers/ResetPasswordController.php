@@ -22,7 +22,7 @@ class ResetPasswordController extends Controller
     public function index()
     {
         $response = [ 'link' => 'http://localhost:3000/' ];
-        // Mail::to('francisgill1000@gmail.com')->send(new PasswordReset($response));
+        Mail::to('francisgill1000@gmail.com')->send(new PasswordReset($response));
 
         return new PasswordReset($response);
 
