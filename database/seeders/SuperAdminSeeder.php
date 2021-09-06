@@ -15,7 +15,7 @@ class SuperAdminSeeder extends Seeder
     {
         \DB::table('users')->insert([
             "name" =>  "Super Admin",
-            "email" => "master@erp.com",
+            "email" => "cadmanedwards1000@gmail.com",
             "password" => \Hash::make("secret") 
 
         ]);
