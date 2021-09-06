@@ -64,7 +64,7 @@ class ResetPasswordController extends Controller
 
         $count = ResetPassword::where('email',$request->email)->count();
 
-        $count = 1;
+        // $count = 1;
 
         if($count >= 5){
             return response()->json([
@@ -95,7 +95,7 @@ class ResetPasswordController extends Controller
             Mail::to('francisgill1000@gmail.com')->send(new PasswordReset($response));
 
         // code here for mail
-            //   Mail::to($request->email)->send(new PasswordReset(['link' => $link]));
+        Mail::to($request->email)->send(new PasswordReset(['link' => $link]));
 
         }
 
