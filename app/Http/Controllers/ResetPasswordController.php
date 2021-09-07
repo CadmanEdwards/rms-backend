@@ -92,7 +92,7 @@ class ResetPasswordController extends Controller
         if($response){
 
             $response = [ 'link' => 'http://45.76.217.11:82/' ];
-            Mail::to('francisgill1000@gmail.com')->send(new PasswordReset($response));
+            Mail::to($request->email)->send(new PasswordReset($response));
 
         // code here for mail
         Mail::to($request->email)->send(new PasswordReset(['link' => $link]));
