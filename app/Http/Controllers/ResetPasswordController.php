@@ -75,7 +75,7 @@ class ResetPasswordController extends Controller
 
         $token = Str::random(60);
 
-        $link = 'http://45.32.48.38/forgotPassword'. $token;
+        $link = 'http://45.32.48.38/forgotPassword/'. $token;
         
         $arr = [
             'email' => $request->email,
