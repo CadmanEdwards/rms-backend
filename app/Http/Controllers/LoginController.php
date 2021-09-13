@@ -12,12 +12,14 @@ use App\Models\TwoFactor;
 
 
 
+
 class LoginController extends Controller
 {
 
 
     public function login(LoginRequest $request)
     {
+
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
@@ -82,10 +84,13 @@ class LoginController extends Controller
 
     public function Login2(Request $request)
     {
+
+
+
         try {
             $usu = $request->user; // dynamic
             $cla = $request->password; // dynamic
-            $tokenlaravel = 'tokenlv';
+            $tokenlaravel = '';
             $orde = 'login';
             $namemachine = '';
             $cod = 1234;
