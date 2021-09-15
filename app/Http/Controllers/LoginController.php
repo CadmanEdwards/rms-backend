@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\LoginRequest;
 use App\Models\TwoFactor;
-
-
+use App\Models\RegisteredDevice;
 
 
 class LoginController extends Controller
@@ -85,12 +84,12 @@ class LoginController extends Controller
     public function Login2(Request $request)
     {
 
-
+        $token = RegisteredDevice::orderBy('id','desc')->first();
 
         try {
             $usu = $request->user; // dynamic
             $cla = $request->password; // dynamic
-            $tokenlaravel = '';
+            $tokenlaravel = $token->token_equ;
             $orde = 'login';
             $namemachine = '';
             $cod = 1234;
@@ -119,8 +118,10 @@ class LoginController extends Controller
 
             $user = $response[0] ?? 0;
 
+            // return $user;
+
             return response()->json([
-                'token' => $user->token,
+                'token' => $user->token ?? '',
                 'user' => $user
             ], 200); 
 
@@ -135,45 +136,27 @@ class LoginController extends Controller
 
     public function active_cod(Request $request)
     {
-        try {
-            $usu = $request->user; // dynamic
-            $cla = ''; // dynamic
-            $tokenlaravel = 'tokenlv';
-            $orde = 'active_cod';
-            $namemachine = '';
-            $cod = 1234;
-            $form = 'fsql';
+        $response = $this->doJob($request,'active_cod');
 
+        if(!$response){
+            return $response;
+        }
 
-
-            $response =  \DB::select("CALL bl_ent_ban('$usu','$cla','$tokenlaravel','$orde','$namemachine','$cod','$form')");
-
-            if($response && $response[0]->e == 0){
-
-                return response()->json([
-                    'status' => false,
-                    'errors' => [$response[0]->m]
-                    ],422); 
-
-            }
-
-            return $this->active_user($request);
-
-    } catch (\Exception $e) {
-        return $e;
-        die("Could not connect to the database.  Please check your configuration. error:" . $e );
-    }
-  
-
+        return $this->active_user($request);
     }
 
     public function active_user($request)
     {
+        return $this->doJob($request,'active_user');
+    }
+
+    public function doJob($request,$action)
+    {
         try {
             $usu = $request->user; // dynamic
             $cla = ''; // dynamic
-            $tokenlaravel = 'tokenlv';
-            $orde = 'active_user';
+            $tokenlaravel = '';
+            $orde = $action;
             $namemachine = '';
             $cod = $request->cod;
             $form = 'fsql';
@@ -194,7 +177,7 @@ class LoginController extends Controller
                 'messages' => [$response[0]->m]
                 ],200); 
 
-                
+            // return $this->active_user($request);
 
     } catch (\Exception $e) {
         return $e;
@@ -203,4 +186,6 @@ class LoginController extends Controller
   
 
     }
+
+    
 }

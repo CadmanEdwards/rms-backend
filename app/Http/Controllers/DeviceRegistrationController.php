@@ -4,58 +4,78 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\RegisteredDevice;
+
 class DeviceRegistrationController extends Controller
 {
+    public function index()
+    {
+        
+    }
     public function register_temp(Request $request)
     {
-        return $this->doJob($request,'register_temp');
+        try {
+            $response = RegisteredDevice::create($this->setFields($request,'register_perm'));
+            return $this->set_SR('El dispositivo ha sido registrado');
+            
+        } catch (\Throwable $th) {
+            return $this->set_ER(['El dispositivo no se puede registrar']);
+        }
     }
 
     public function o(Request $request)
     {
-        return $this->doJob($request,'o');
+        try {
+            $response = RegisteredDevice::create($this->setFields($request,'register_perm'));
+            return $this->set_SR('El dispositivo ha sido registrado');
+            
+        } catch (\Throwable $th) {
+            return $this->set_ER(['El dispositivo no se puede registrar']);
+        }
     }
-
     public function register_perm(Request $request)
     {
-        return $this->doJob($request,'register_perm');
-    }
-
-
-    public function doJob($request,$action)
-    {
+       
         try {
+            $response = RegisteredDevice::create($this->setFields($request,'register_perm'));
+            return $this->set_SR('El dispositivo ha sido registrado');
+            
+        } catch (\Throwable $th) {
+            return $this->set_ER(['El dispositivo no se puede registrar']);
+        }
+    }
 
-            $usu = $request->user; // dynamic
-            $cla = ''; // dynamic
-            $tokenlaravel = \Str::random(30);
-            $orde = $action;
-            $namemachine = $request->namemachine;
-            $cod = $request->cod;
-            $form = 'fsql';
+    public function setFields($request,$state)
+    {
+        return [
 
-             $response =  \DB::select("CALL bl_ent_ban('$usu','$cla','$tokenlaravel','$orde','$namemachine','$cod','$form')");
+            "usuario_ban" => $request->user,
+            "codigo_ban" => '0001',
+            "token_equ" => \Hash::make($request->namemachine),
+            "estado" => $request->action,
+            "nombre" => $request->namemachine,
+            "fecha_aut" => now(),
+            "codigo" => $request->cod
 
-            if($response && $response[0]->e == 0){
+        ];
+    }
+    
+    public function set_ER($msgs)
+    {
+        return response()->json([
+            'status' => false,
+            'errors' => $msgs
+            ],422); 
+    }
 
-                return response()->json([
-                    'status' => false,
-                    'errors' => [$response[0]->m ?? '']
-                    ],422); 
+    public function set_SR($msg)
+    {
+        return response()->json([
+            'status' => true,
+            'response' => $msg
+        ], 200); 
 
-            }
-
-            return response()->json([
-                'status' => true,
-                'response' => $response
-            ], 200); 
-
-
-    } catch (\Exception $e) {
-        return $e;
-        die("Could not connect to the database.  Please check your configuration. error:" . $e );
     }
 
 
-    }
 }
