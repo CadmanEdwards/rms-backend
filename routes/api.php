@@ -11,10 +11,11 @@ use App\Http\Controllers\DeviceRegistrationController;
 
 
 
-// Route::post('login', [LoginController::class,'login']);
-Route::post('login', [LoginController::class,'login2']);
+Route::post('login', [LoginController::class,'login']);
 
-Route::get('me', [LoginController::class,'me']);
+
+
+Route::get('me', [LoginController::class,'me'])->middleware('auth:sanctum');
 Route::get('two-factor', [LoginController::class,'index']);
 
 Route::resource('role',RoleController::class);
@@ -28,13 +29,6 @@ Route::post('reset_password', [ResetPasswordController::class,'reset_password'])
 Route::get('reset_password_link/{token}', [ResetPasswordController::class,'reset_password_link']);
 Route::post('reset_password_update', [ResetPasswordController::class,'reset_password_update']);
 
-
-Route::post('register_temp',[DeviceRegistrationController::class,'register_temp']);
-Route::post('o',[DeviceRegistrationController::class,'o']);
-Route::post('register_perm',[DeviceRegistrationController::class,'register_perm']);
-
-Route::post('active_cod',[LoginController::class,'active_cod']);
-Route::post('active_user',[LoginController::class,'active_user']);
 
 
 

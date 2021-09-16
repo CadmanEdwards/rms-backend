@@ -15,7 +15,7 @@ class UserController extends Controller
 
     public function index()
     {
-        return User::with('role')->where('role_id', '!=' , 0)->get();
+        return User::with('role')->get();
     }
 
    

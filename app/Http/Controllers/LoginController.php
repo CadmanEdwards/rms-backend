@@ -10,6 +10,10 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Requests\LoginRequest;
 use App\Models\TwoFactor;
 use App\Models\RegisteredDevice;
+use App\Models\Role;
+use App\Models\Permission;
+
+
 
 
 class LoginController extends Controller
@@ -19,7 +23,10 @@ class LoginController extends Controller
     public function login(LoginRequest $request)
     {
 
-        $user = User::where('email', $request->email)->first();
+        // cadmanedwards1000@gmail.com
+
+
+        $user = User::with(['role:id,role,role_slug'])->where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
 
@@ -30,7 +37,9 @@ class LoginController extends Controller
 
         }
 
-        $this->store_two_factor($user->id);
+
+
+        // $this->store_two_factor($user->id);
 
         return response()->json([
             'token' => $user->createToken('myApp')->plainTextToken,
@@ -40,9 +49,19 @@ class LoginController extends Controller
     }
 
     public function me(Request $request){
-		return response()->json([
-            'user' => $request->all()
-	],200); 
+
+        $user = $request->user();
+        
+        $permissions =  Permission::whereRoleId($user->role_id)->pluck('permission')->toArray();
+
+        $user->canAdd = in_array("add", $permissions) ?  true : false ;
+        $user->canEdit = in_array("edit", $permissions) ?  true : false ;
+        $user->canView = in_array("view", $permissions) ?  true : false ;
+        $user->canDelete = in_array("delete", $permissions) ?  true : false ;
+
+      
+
+		return [ 'user' => $user ]; 
 	}
 
 
@@ -80,112 +99,4 @@ class LoginController extends Controller
         // return TwoFactor::get();
     }
 
-
-    public function Login2(Request $request)
-    {
-
-        $token = RegisteredDevice::orderBy('id','desc')->first();
-
-        try {
-            $usu = $request->user; // dynamic
-            $cla = $request->password; // dynamic
-            $tokenlaravel = $token->token_equ;
-            $orde = 'login';
-            $namemachine = '';
-            $cod = 1234;
-            $form = 'fsql';
-
-
-
-            $response =  \DB::select("CALL bl_ent_ban('$usu','$cla','$tokenlaravel','$orde','$namemachine','$cod','$form')");
-
-            if($response && $response[0]->e == 0){
-
-                return response()->json([
-                    'status' => false,
-                    'errors' => [$response[0]->m]
-                    ],422); 
-
-            }
-
-            else if($response && $response[0]->e == 1 && $response[0]->m == 'Registre equipo'){
-
-                return response()->json([
-                    'device_registration' => true,
-                    ],422); 
-
-            }
-
-            $user = $response[0] ?? 0;
-
-            // return $user;
-
-            return response()->json([
-                'token' => $user->token ?? '',
-                'user' => $user
-            ], 200); 
-
-
-    } catch (\Exception $e) {
-        return $e;
-        die("Could not connect to the database.  Please check your configuration. error:" . $e );
-    }
-  
-
-    }
-
-    public function active_cod(Request $request)
-    {
-        $response = $this->doJob($request,'active_cod');
-
-        if(!$response){
-            return $response;
-        }
-
-        return $this->active_user($request);
-    }
-
-    public function active_user($request)
-    {
-        return $this->doJob($request,'active_user');
-    }
-
-    public function doJob($request,$action)
-    {
-        try {
-            $usu = $request->user; // dynamic
-            $cla = ''; // dynamic
-            $tokenlaravel = '';
-            $orde = $action;
-            $namemachine = '';
-            $cod = $request->cod;
-            $form = 'fsql';
-
-            $response =  \DB::select("CALL bl_ent_ban('$usu','$cla','$tokenlaravel','$orde','$namemachine','$cod','$form')");
-
-            if($response && $response[0]->e == 0){
-
-                return response()->json([
-                    'status' => false,
-                    'errors' => [$response[0]->m]
-                    ],422); 
-
-            }
-
-            return response()->json([
-                'status' => true,
-                'messages' => [$response[0]->m]
-                ],200); 
-
-            // return $this->active_user($request);
-
-    } catch (\Exception $e) {
-        return $e;
-        die("Could not connect to the database.  Please check your configuration. error:" . $e );
-    }
-  
-
-    }
-
-    
 }

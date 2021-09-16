@@ -15,9 +15,40 @@ class SuperAdminSeeder extends Seeder
     {
         \DB::table('users')->insert([
             "name" =>  "Super Admin",
-            "email" => "cadmanedwards1000@gmail.com",
+            "email" => "master@erp.com",
+            'is_super_admin' => 1,
+            'role_id' => 1,
             "password" => \Hash::make("secret") 
 
+        ]);
+
+        \DB::table('roles')->insert([
+            "role" =>  "Master",
+            "role_slug" => "master",
+
+        ]);
+
+        \DB::table('permissions')->insert([
+            [
+                "permission" =>  "add",
+                "role_id" => 1
+    
+            ],
+            [
+                "permission" =>  "edit",
+                "role_id" => 1
+    
+            ],
+            [
+                "permission" =>  "view",
+                "role_id" => 1
+    
+            ],
+            [
+                "permission" =>  "delete",
+                "role_id" => 1
+    
+            ]
         ]);
     }
 }
